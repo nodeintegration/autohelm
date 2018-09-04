@@ -39,6 +39,7 @@ class AutoHelm(object):
         self._home = os.environ.get('HELM_HOME')
         self._dryrun = dryrun
         self._debug = debug
+        self._file = file
         self._local_development = local_development
         if self._local_development:
             logging.info("Local Development is ON")
