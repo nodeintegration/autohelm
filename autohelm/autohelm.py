@@ -362,9 +362,19 @@ class AutoHelm(object):
         for file in chart.get('files', []):
             args.append("-f={}".format(file))
 
-        for key, value in chart.get('values', {}).iteritems():
-            for k, v in self._format_set(key, value):
-                args.append("--set={}={}".format(k, v))
+        # If we have values, dump it out to a temp file and pass it to helm
+        #XXX cleanup out_file after helm command
+        out_file = "{}.tmp".format(self.file)
+        v = chart.get('values', {})
+        with open(out_file, 'w') as o:
+          yaml.dump(v, out_file, default_style='|')
+        args.append("-f={}".format(out_file))
+
+        #for key, value in chart.get('values', {}).iteritems():
+        #    for k, v in self._format_set(key, value):
+        #        args.append("--set={}={}".format(k, v))
+
+        #XXX This could also go away with the above approach
         for key, value in chart.get('values-strings', {}).iteritems():
             for k, v in self._format_set(key, value):
                 args.append("--set-string={}={}".format(k, v))
